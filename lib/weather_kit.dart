@@ -42,7 +42,7 @@ class WeatherKit {
   }
 
   /// [country] should be the ISO Alpha-2 country code.
-  Future<List<dynamic>> obtainAvailability({
+  Future<List<DataSet>> obtainAvailability({
     required final String jwt,
     required final double latitude,
     required final double longitude,
@@ -62,7 +62,7 @@ class WeatherKit {
       throw FormatException('Response body is not a list. Response body: ${response.body}');
     }
 
-    return decode;
+    return decode.map((e) => DataSet.fromString(e)).toList(growable: false);
   }
 
   /// Obtain weather data for the specified location.
@@ -82,29 +82,35 @@ class WeatherKit {
   }) async {
     assert(latitude >= -90.0 || latitude <= 90.0);
     assert(latitude >= -180.0 || latitude <= 180.0);
-    String url = '$baseUrl/weather/$language/$latitude/$longitude?dataSets=${dataSets.name}&timezone=$timezone';
+    StringBuffer url = StringBuffer('$baseUrl/weather/$language/$latitude/$longitude?dataSets=${dataSets.name}&timezone=$timezone');
 
     if (countryCode != null) {
-      url = '$url&countryCode=$countryCode';
+      url.write('&countryCode=');
+      url.write(countryCode);
     }
     if (currentAsOf != null) {
-      url = '$url&currentAsOf=${currentAsOf.toUtc().toIso8601String()}';
+      url.write('&currentAsOf=');
+      url.write(currentAsOf.toUtc().toIso8601String());
     }
     if (dailyEnd != null) {
-      url = '$url&dailyEnd=${dailyEnd.toUtc().toIso8601String()}';
+      url.write('&dailyEnd=');
+      url.write(dailyEnd.toUtc().toIso8601String());
     }
     if (dailyStart != null) {
-      url = '$url&dailyStart=${dailyStart.toUtc().toIso8601String()}';
+      url.write('&dailyStart=');
+      url.write(dailyStart.toUtc().toIso8601String());
     }
     if (hourlyEnd != null) {
-      url = '$url&hourlyEnd=${hourlyEnd.toUtc().toIso8601String()}';
+      url.write('&hourlyEnd=');
+      url.write(hourlyEnd.toUtc().toIso8601String());
     }
     if (hourlyStart != null) {
-      url = '$url&hourlyStart=${hourlyStart.toUtc().toIso8601String()}';
+      url.write('&hourlyStart=');
+      url.write(hourlyStart.toUtc().toIso8601String());
     }
 
     final response = await http.get(
-      Uri.parse(url),
+      Uri.parse(url.toString()),
       headers: {HttpHeaders.authorizationHeader: jwt},
     );
     if (!(response.statusCode >= 200 && response.statusCode < 300)) {

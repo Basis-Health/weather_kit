@@ -13,5 +13,14 @@ enum DataSet {
   forecastNextHour,
 
   /// Weather alerts for the requested location.
-  weatherAlerts
+  weatherAlerts;
+
+  static DataSet fromString(String name) => switch (name) {
+    'currentWeather' => DataSet.currentWeather,
+    'forecastDaily' => DataSet.forecastDaily,
+    'forecastHourly' => DataSet.forecastHourly,
+    'forecastNextHour' => DataSet.forecastNextHour,
+    'weatherAlerts' => DataSet.weatherAlerts,
+    _ => throw ArgumentError.value(name, 'name', 'Invalid data set name.'),
+  };
 }
