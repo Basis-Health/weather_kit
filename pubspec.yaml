@@ -9,7 +9,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  dart_jsonwebtoken: ^2.8.2
+  dart_jsonwebtoken: ^3.0.0
   flutter:
     sdk: flutter
   http: ^1.1.0
